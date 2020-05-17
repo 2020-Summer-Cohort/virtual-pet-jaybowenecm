@@ -13,11 +13,13 @@ namespace VirtualPet
 
      public enum PET_STATES
         {
+           
             HUNGER,
             THIRST,
             WASTE,
             BOREDOM,
-            SLEEPING            
+            SLEEPING,          
+            HEALTH
             
         }
 

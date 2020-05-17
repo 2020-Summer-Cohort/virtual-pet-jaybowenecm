@@ -92,7 +92,7 @@ namespace VirtualPet
             for (int i = 0; i< Pet.AllPets.Count;i++)
             {
 
-                Console.WriteLine("Enter [" + i + "] for pet " + Pet.AllPets[i].petName);
+                Console.WriteLine("Enter [" + i + "] for pet " + Pet.AllPets[i].Name);
 
             }
 

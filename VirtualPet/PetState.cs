@@ -14,13 +14,31 @@ namespace VirtualPet
         { get { return activityLevel; } }
 
 
-        public void IncreaseActivity()
+        /// <summary>
+        /// Accepts positive and negative values
+        /// </summary>
+        /// <param name="activetyLevelChange"></param>
+        public void UpdateActivityLevel(int activetyLevelChange)
+        {
+
+            this.activityLevel += activetyLevelChange;
+            if (activityLevel >= 100)
+            {
+
+                Console.WriteLine(this.petState.ToString() + " is starting over");
+                activityLevel = 0;
+            }
+
+        }
+
+        
+        public void UpdateActivityLevel()
         {
 
             activityLevel += 1;
             Console.WriteLine(this.petState.ToString() + ":" + this.activityLevel);
 
-            if(activityLevel >= 10)
+            if(activityLevel >= 100)
             {
 
                 Console.WriteLine(this.petState.ToString() + " is starting over");
@@ -33,8 +51,8 @@ namespace VirtualPet
         {
 
             petState = newState;
-            
 
+           
 
         }
 
@@ -44,6 +62,29 @@ namespace VirtualPet
             Random rnd = new Random();
             this.petState = currentState;
             this.activityLevel = rnd.Next(1, 10);
+
+            //Apply defaults based on state
+            switch (petState)
+            {
+                case Constants.PET_STATES.HUNGER:
+                    this.activityLevel = 50;
+                    break;
+                case Constants.PET_STATES.THIRST:
+                    break;
+                case Constants.PET_STATES.WASTE:
+                    break;
+                case Constants.PET_STATES.BOREDOM:
+                    this.activityLevel = 60;
+                    break;
+                case Constants.PET_STATES.SLEEPING:
+                    break;
+
+                case Constants.PET_STATES.HEALTH:
+                    this.activityLevel = 30;
+                    break;
+                default:
+                    break;
+            }
 
 
 
