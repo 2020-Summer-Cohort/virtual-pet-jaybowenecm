@@ -15,27 +15,30 @@ namespace VirtualPet
         private static void RunVirtualPet()
         {
 
-            foreach (String petName in Constants.PET_NAMES)
-            {
-                Pet mypet = new Pet(petName);
-                Console.WriteLine("Added pet: " + petName);
-            }
-               
-
-
+            foreach (Pet pet in PetShelters.DefaultShelter.AllPets)
+                Console.WriteLine("Added pet: " + pet.Name);
+            
 
             bool cancelRequested = false;
             while (!cancelRequested)
             {
                 
-                Console.WriteLine("Enter N to add a new pet, U to update a pet or X to close.");
+                Console.WriteLine("Enter A to update all pets, N to add a new pet, U to update a pet, L to list pets for adoption, P to print the status for all pets or X to close.");
 
                 String userCommand = Console.ReadLine().ToLower();
                 switch(userCommand)
                 {
 
+                    case "a":
+                        ShelterAllAnimalActivities();
+                        break;
+
                     case "x":
                         cancelRequested = true;
+                        break;
+
+                    case "l":
+                        ListPetsForAdoption();
                         break;
 
                     case "n":
@@ -45,6 +48,10 @@ namespace VirtualPet
 
                     case "u":
                         UpdatePetActivity();
+                        break;
+
+                    case "p":
+                        DisplayShelterStatus();
                         break;
 
                     default:
@@ -68,20 +75,72 @@ namespace VirtualPet
 
         }
 
+        private static void ShelterAllAnimalActivities()
+        {
+
+            
+            Console.WriteLine("Enter F to feed the pets, P to play or H to have the vet check all animals");
+            String userInput = Console.ReadLine();
+
+            if (userInput == "F")
+                PetShelters.DefaultShelter.FeedPets();
+
+            else if (userInput == "P")
+                PetShelters.DefaultShelter.PlayWithPets();
+
+            else if (userInput == "H")
+                PetShelters.DefaultShelter.HealthCheckPets();
+
+
+
+        }
+
+        private static void DisplayShelterStatus()
+        {
+            PetShelters.DefaultShelter.GetAllAnimalStatus();
+        }
+
+        private static void ListPetsForAdoption()
+        {
+
+            PetShelters.DefaultShelter.DisplayPetsForAdoption();
+
+
+        }
+
+        private static void GetPetStatus()
+        {
+
+            Console.WriteLine("Please select the pet you are interested in adopting");
+
+            for (int i = 0; i < PetShelters.Shelters[0].AllPets.Count; i++)
+                Console.WriteLine("Enter [" + i + "] for pet " + PetShelters.Shelters[0].AllPets[i].Name);
+
+
+            String petNumberInput = Console.ReadLine();
+            int petIndex = -1;
+            bool isValid = int.TryParse(petNumberInput, out petIndex) && petIndex >= 0 && petIndex < PetShelters.DefaultShelter.AllPets.Count;
+
+            if (isValid)
+                PetShelters.DefaultShelter.DisplayPetStatus(petIndex);
+
+
+        }
+
         private static void AddNewPet()
         {
 
             Console.WriteLine("Please enter the pets name");
             String petName = Console.ReadLine();
-            Pet myPet = new Pet(petName);
-            //Pet.AllPets.Add(myPet);
+            PetShelters.DefaultShelter.AddPet(petName);
 
             Console.WriteLine("You created a new pet: " + petName);
-            foreach (PetState ps in myPet.petActivity)
-                Console.WriteLine("Activity is: " + ps.petState + " with a level of: " + ps.GetActivityLevel);
-
+           
 
         }
+
+       
+
 
         private static void UpdatePetActivity()
         {
@@ -89,48 +148,34 @@ namespace VirtualPet
 
             Console.WriteLine("Please select the pet you wish to update");
 
-            for (int i = 0; i< Pet.AllPets.Count;i++)
-            {
-
-                Console.WriteLine("Enter [" + i + "] for pet " + Pet.AllPets[i].Name);
-
-            }
+            for (int i = 0; i< PetShelters.DefaultShelter.AllPets.Count;i++)
+               Console.WriteLine("Enter [" + i + "] for pet " + PetShelters.DefaultShelter.AllPets[i].Name);
 
 
             String petNumberInput = Console.ReadLine();
             int petNumber = -1;
-            bool isValid = int.TryParse(petNumberInput, out petNumber) && petNumber >= 0 && petNumber < Pet.AllPets.Count;
+            int petActivity = -1;
+            bool isValid = int.TryParse(petNumberInput, out petNumber) && petNumber >= 0 && petNumber < PetShelters.DefaultShelter.AllPets.Count;
 
 
+            if(!isValid)
+                Console.WriteLine("You entered an invalid value: " + petNumberInput);
 
-
-            if(isValid)
+            else
             {
 
-                Pet selectedPet = Pet.AllPets[petNumber];
-                foreach(PetState ps in selectedPet.petActivity)
-                {
-                    int kbShortcut = (int)ps.petState;
-                    String msg = "Which activity would you like to update? Enter the number [" + kbShortcut + "] for " + ps.petState + " and current level is: " + ps.GetActivityLevel;
-                    Console.WriteLine(msg);
-
-                }
-                   
+                Console.WriteLine("What would you like your pet to do?");
+                Console.WriteLine("[1] Eat, [2]Play, [3] Visit Dr, [4] Rest");
 
 
                 petNumberInput = Console.ReadLine();
-                isValid = int.TryParse(petNumberInput, out petNumber) && petNumber >= 0 && Constants.isValidPetState(petNumber);
-                
-                if (isValid)
-                {
-                    Constants.PET_STATES stateToUpdate = (Constants.PET_STATES)petNumber;
-                    selectedPet.IncreaseActivityLevel(stateToUpdate);
-                   
-                }
-                else
+                isValid = int.TryParse(petNumberInput, out petActivity);
+
+                if (!isValid)
                     Console.WriteLine("You entered an invalid value: " + petNumberInput);
-                
-
+                else
+                    PetShelters.DefaultShelter.PerformActivity(petNumber, petActivity);
+                   
 
             }
 
@@ -139,14 +184,5 @@ namespace VirtualPet
 
         }
 
-        private static void PerformAction(int petNumber, Constants.PET_STATES action)
-        {
-            if (Pet.AllPets.Count <= petNumber)
-
-            {
-                Pet mypet = Pet.AllPets[petNumber];
-                mypet.IncreaseActivityLevel(action);
-            }
-        }
     }
 }

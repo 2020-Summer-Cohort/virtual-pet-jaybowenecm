@@ -72,13 +72,13 @@ namespace VirtualPet.Tests
         [Fact]
         public void Pet_Should_Have_Hunger()
         {
-            Assert.NotNull(testPet.GetHunger().ToString());
+            Assert.NotNull(testPet.LevelHunger.ToString());
         }
 
         [Fact]
         public void GetHunger_Should_Return_Initial_Hunger_Level_Of_50()
         {
-            int testPetHunger = testPet.GetHunger();
+            int testPetHunger = testPet.LevelHunger;
 
             Assert.Equal(50, testPetHunger);
         }
@@ -86,13 +86,13 @@ namespace VirtualPet.Tests
         [Fact]
         public void Pet_Should_Have_Boredom()
         {
-            Assert.NotNull(testPet.GetBoredom().ToString());
+            Assert.NotNull(testPet.LevelBoredom.ToString());
         }
 
         [Fact]
         public void GetBoredom_Should_Return_Initial_Boredom_Level_Of_60()
         {
-            int testPetBoredom = testPet.GetBoredom();
+            int testPetBoredom = testPet.LevelBoredom;
 
             Assert.Equal(60, testPetBoredom);
         }
@@ -100,14 +100,14 @@ namespace VirtualPet.Tests
         [Fact]
         public void Pet_Should_Have_Health()
         {
-            Assert.NotNull(testPet.GetHealth().ToString());
+            Assert.NotNull(testPet.LevelHealth.ToString());
         }
 
         [Fact]
         public void GetHealth_Should_Return_Initial_Health_Level_Of_30()
         {
             
-            int testPetHealth = testPet.GetHealth();
+            int testPetHealth = testPet.LevelHealth;
             Assert.Equal(30, testPetHealth);
         }
 
@@ -116,16 +116,16 @@ namespace VirtualPet.Tests
         {
             testPet.Feed();
 
-            Assert.Equal(10, testPet.GetHunger());
+            Assert.Equal(10, testPet.LevelHunger);
         }
 
         [Fact]
         public void SeeDoctor_Should_Increase_Health_By_30()
         {
 
-            int healthChange = testPet.GetHealth();
+            int healthChange = testPet.LevelHealth;
             testPet.SeeDoctor();
-            healthChange = testPet.GetHealth() - healthChange;
+            healthChange = testPet.LevelHealth - healthChange;
 
             Assert.Equal(30, healthChange);
         }
@@ -134,9 +134,9 @@ namespace VirtualPet.Tests
         public void Play_Should_Increase_Hunger_By_10()
         {
 
-            int activityLevel = testPet.GetHunger();
+            int activityLevel = testPet.LevelHunger;
             testPet.Play();
-            activityLevel = testPet.GetHunger() - activityLevel;
+            activityLevel = testPet.LevelHunger - activityLevel;
 
             Assert.Equal(10, activityLevel);
         }
@@ -144,21 +144,21 @@ namespace VirtualPet.Tests
         [Fact]
         public void Play_Should_Decrease_Boredom_By_20()
         {
-            int activityLevel = testPet.GetBoredom();
+            int activityLevel = testPet.LevelBoredom;
             testPet.Play();
-            activityLevel = testPet.GetBoredom() - activityLevel;
-            Assert.Equal(40, testPet.GetBoredom());
+            activityLevel = testPet.LevelBoredom - activityLevel;
+            Assert.Equal(40, testPet.LevelBoredom);
         }
 
         [Fact]
         public void Play_Should_Increase_Health_By_10()
         {
 
-            int activityLevel = testPet.GetHealth();
+            int activityLevel = testPet.LevelHealth;
             testPet.Play();
-            activityLevel = testPet.GetHealth() - activityLevel;
+            activityLevel = testPet.LevelHealth - activityLevel;
             
-            Assert.Equal(40, testPet.GetHealth());
+            Assert.Equal(40, testPet.LevelHealth);
         }
 
         [Fact]
@@ -166,15 +166,17 @@ namespace VirtualPet.Tests
         {
             testPet.Tick();
 
-            Assert.Equal(55, testPet.GetHunger());
+            Assert.Equal(55, testPet.LevelHunger);
         }
 
         [Fact]
         public void Tick_Should_Increase_Boredom_By_5()
         {
-            testPet.Tick();
 
-            Assert.Equal(65, testPet.GetBoredom());
+            int Level = testPet.LevelBoredom;
+            testPet.Tick();
+            bool isLevelSet = testPet.LevelBoredom == (Level + 5);
+            Assert.True(isLevelSet);
         }
 
         [Fact]
@@ -182,7 +184,7 @@ namespace VirtualPet.Tests
         {
             testPet.Tick();
 
-            Assert.Equal(25, testPet.GetHealth());
+            Assert.Equal(25, testPet.LevelHealth);
         }
     }
 }

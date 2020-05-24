@@ -1,16 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 
 namespace VirtualPet
 {
     public class Pet
     {
-        public static List<Pet> AllPets = new List<Pet>();
-        public string Name { get; private set; }
-        public List<PetState> petActivity = new List<PetState>();
         private Guid id = Guid.NewGuid();
-       
+        public string Name { get; private set; }
+        public int LevelHunger { get; private set; }
+        public int LevelThirst { get; private set; }
+        public int LevelWaste { get; private set; }
+        public int LevelSleepiness { get; private set; }
+        public int LevelSickness { get; private set; }
+        public int LevelBoredom { get; private set; }
+
+        public int LevelHealth { get; private set; }
 
         public Guid Id
         { get { return id; } }
@@ -21,14 +25,31 @@ namespace VirtualPet
         {
             this.Name = petName;
             this.Species = "Iguana";
+            LevelHunger = 50;
+            LevelBoredom = 60;
+            LevelHealth = 30;
+        }
 
-            foreach (int i in Enum.GetValues(typeof(Constants.PET_STATES)))
+       internal void GetStatus()
+        {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            //sb.AppendLine("Health: " + LevelHealth);
+            //sb.AppendLine("Boredom: " + LevelBoredom);
+            //sb.AppendLine("Hunger: " + LevelHunger);
+            //sb.AppendLine("LevelHealth: " + LevelHealth);
+            //sb.AppendLine("Sickness: " + LevelSickness);
+            //sb.AppendLine("Sleepiness: " + LevelSleepiness);
+            //sb.AppendLine("Thirst: " + LevelThirst);
+            //sb.AppendLine("Waste: " + LevelWaste);
+
+            PropertyInfo[] properties = typeof(Pet).GetProperties();
+            foreach (PropertyInfo property in properties)
             {
-                Constants.PET_STATES petState = (Constants.PET_STATES)i;
-                this.petActivity.Add(new PetState(petState));
+                object? value = property.GetValue(this, null);
+                sb.AppendLine(property.Name + ": " + value.ToString());
             }
 
-            AllPets.Add(this);
+            Console.WriteLine(sb.ToString());
         }
 
         public void SetName(string petName)
@@ -41,16 +62,13 @@ namespace VirtualPet
 
         public void Tick()
         {
-            //Examine internal state.... are we hungry, sleepy, or full of food
-            this.petActivity.Where(x => x.petState == Constants.PET_STATES.HUNGER).FirstOrDefault().UpdateActivityLevel(5);
-            this.petActivity.Where(x => x.petState == Constants.PET_STATES.BOREDOM).FirstOrDefault().UpdateActivityLevel(5);
-            this.petActivity.Where(x => x.petState == Constants.PET_STATES.HEALTH).FirstOrDefault().UpdateActivityLevel(-5);
+            //Examine internal state.... are we hungry, sleepy, or full of food]
+            LevelBoredom += 5;
+            LevelHunger += 5;
+            LevelHealth -= 5;
         }
 
-        public void IncreaseActivityLevel(Constants.PET_STATES petStateToUpdate)
-        {
-            this.petActivity.Where(x => x.petState == petStateToUpdate).FirstOrDefault().UpdateActivityLevel();
-        }
+       
 
         public void SetSpecies(string newSpecies)
         {
@@ -60,35 +78,19 @@ namespace VirtualPet
         public string GetSpecies()
         {
             return this.Species;
-
-          
-    }
-
-        public int GetHunger()
-        {
-            return this.petActivity.Where(x => x.petState == Constants.PET_STATES.HUNGER).FirstOrDefault().GetActivityLevel;
-        }
-
-        public int GetBoredom()
-        {
-            return this.petActivity.Where(x => x.petState == Constants.PET_STATES.BOREDOM).FirstOrDefault().GetActivityLevel;
-        }
-
-        public int GetHealth()
-        {
-            return this.petActivity.Where(x => x.petState == Constants.PET_STATES.HEALTH).FirstOrDefault().GetActivityLevel;
         }
 
         public void SeeDoctor()
         {
-            this.petActivity.Where(x => x.petState == Constants.PET_STATES.HEALTH).FirstOrDefault().UpdateActivityLevel(30);
+            LevelHealth += 30;
+            LevelSickness = 0;
         }
 
         public void Play()
         {
-            this.petActivity.Where(x => x.petState == Constants.PET_STATES.HUNGER).FirstOrDefault().UpdateActivityLevel(10);
-            this.petActivity.Where(x => x.petState == Constants.PET_STATES.BOREDOM).FirstOrDefault().UpdateActivityLevel(-20);
-            this.petActivity.Where(x => x.petState == Constants.PET_STATES.HEALTH).FirstOrDefault().UpdateActivityLevel(10);
+            LevelHunger += 10;
+            LevelBoredom -= 20;
+            LevelHealth += 10;
         }
 
         /// <summary>
@@ -96,7 +98,14 @@ namespace VirtualPet
         /// </summary>
         public void Feed()
         {
-            this.petActivity.Where(x => x.petState == Constants.PET_STATES.HUNGER).FirstOrDefault().UpdateActivityLevel(-40);
+            LevelHunger -= 40;
+            if (LevelHunger < 0)
+                LevelHunger = 0;
+        }
+
+        internal void Rest()
+        {
+            LevelSleepiness = 0;
         }
     }
 }
