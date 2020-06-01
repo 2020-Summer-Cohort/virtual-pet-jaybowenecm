@@ -18,7 +18,7 @@ namespace VirtualPet.Tests
             string petList = PetShelters.DefaultShelter.DisplayPetsForAdoption();
 
             //Assert
-            Assert.Contains(Constants.PET_NAMES[1], petList);
+            Assert.Contains(Constants.ORGANIC_PET_NAMES[1], petList);
 
 
         }
@@ -29,7 +29,7 @@ namespace VirtualPet.Tests
 
 
             String petName = "Pac Man";
-            PetShelters.DefaultShelter.AddPet(petName);
+            PetShelters.DefaultShelter.AddPet(petName, Constants.PET_TYPE.ORGANIC, Constants.SPECIES_TYPE.DOG);
             bool hasPet = PetShelters.DefaultShelter.HasPet(petName);
 
             Assert.True(hasPet);
@@ -57,10 +57,12 @@ namespace VirtualPet.Tests
 
             int petIndex = 0;
             int petActivity = 2;
-            int level = PetShelters.DefaultShelter.AllPets[petIndex].LevelBoredom;
+            PetOrganic myPet = (PetOrganic)PetShelters.DefaultShelter.AllPets[petIndex];
+            int level = myPet.LevelBoredom;
+            
             PetShelters.DefaultShelter.PerformActivity(petIndex, petActivity);
 
-            level = level - PetShelters.DefaultShelter.AllPets[petIndex].LevelBoredom;
+            level = level - myPet.LevelBoredom;
             Assert.Equal(20, level);
 
 
@@ -71,7 +73,7 @@ namespace VirtualPet.Tests
         public void PetShelter_Adopt()
         {
 
-            String petName = Constants.PET_NAMES[0];
+            String petName = Constants.ORGANIC_PET_NAMES[0];
             PetShelters.DefaultShelter.AdoptPet(0);
             bool hasPet = PetShelters.DefaultShelter.HasPet(petName);
 

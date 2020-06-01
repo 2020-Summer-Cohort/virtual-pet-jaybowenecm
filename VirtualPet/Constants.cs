@@ -7,31 +7,26 @@ namespace VirtualPet
     public static class Constants
     {
 
-        static HashSet<int> validVals = new HashSet<int>((int[])Enum.GetValues(typeof(PET_STATES)));
+        public static String[] ORGANIC_PET_NAMES = { "Fido", "Binky", "Bella", "Lucy", "Smokey", "Animal" };
 
-        public static String[] PET_NAMES = { "Fido", "Binky", "Bella", "Lucy", "Smokey", "Animal" };
+        public static String[] INORGANIC_PET_NAMES = { "Terminator", "Iron Giant", "WALL-E" };
 
-     public enum PET_STATES
+        public enum PET_TYPE
         {
            
-            HUNGER,
-            THIRST,
-            WASTE,
-            BOREDOM,
-            SLEEPING,          
-            HEALTH
+            ORGANIC, 
+            INORGANIC
             
         }
 
-
-        public static bool isValidPetState(int PetState)
+        public enum SPECIES_TYPE
         {
 
-
-            return validVals.Contains(PetState);
-
+            CAT,
+            DOG
 
         }
+
 
 
     }

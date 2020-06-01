@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace VirtualPet
 {
@@ -33,8 +34,9 @@ namespace VirtualPet
         public void AdoptPet(int petToRemove)
         {
             Pet myPet = containedPets[petToRemove];
-            containedPets.Remove(myPet);
-            Console.WriteLine("Pet was successfully adopted from the shelter: " + myPet.Name);
+            bool wasRemoved = containedPets.Remove(myPet);
+            
+            Console.WriteLine("Pet was successfully (t/f)" + wasRemoved + " adopted from the shelter: " + myPet.Name);
         }
 
         public void AdoptPet(string petToRemove)
@@ -44,11 +46,19 @@ namespace VirtualPet
             Console.WriteLine("Pet was successfully adopted from the shelter: " + myPet.Name);
         }
 
-        public void AddPet(String petName)
+        public void AddPet(String petName, Constants.PET_TYPE petType, Constants.SPECIES_TYPE speciesType)
         {
-            this.containedPets.Add(new Pet(petName));
+
+            if (petType == Constants.PET_TYPE.INORGANIC)
+                this.containedPets.Add(new PetRobot(petName, speciesType));
+            else
+                this.containedPets.Add(new PetOrganic(petName, speciesType));
+
+
             Console.WriteLine("Pet was successfully added: " + petName);
         }
+
+      
 
         public string DisplayPetsForAdoption()
         {
@@ -64,15 +74,19 @@ namespace VirtualPet
 
         public int AllAnimalHungerLevel
         {
-
             get
             {
 
-                return this.containedPets.Sum(x => x.LevelHunger);
+                int totalHunger = 0;
+                foreach (Pet myPet in containedPets)
+                {
+                    if (myPet is PetOrganic)
+                        totalHunger += ((PetOrganic)myPet).LevelHunger;
 
+                }
 
+                return totalHunger;
             }
-
 
         }
 
@@ -91,7 +105,8 @@ namespace VirtualPet
             foreach (Pet pet in containedPets)
             {
                 Console.WriteLine("Feeding pet: " + pet.Name);
-                pet.Feed();
+                if (pet is PetOrganic)
+                    ((PetOrganic)pet).Feed();
             }
         }
 
@@ -109,7 +124,8 @@ namespace VirtualPet
             foreach (Pet pet in containedPets)
             {
                 Console.WriteLine("Dr Poll is now checking on: " + pet.Name);
-                pet.SeeDoctor();
+                if (pet is PetOrganic)
+                    ((PetOrganic)pet).SeeDoctor();
             }
         }
 
@@ -123,32 +139,72 @@ namespace VirtualPet
 
         public void PerformActivity(int petIndex, int petActivity)
         {
-            Pet selectedPet = this.containedPets[petIndex];
+            
+            
+            PetOrganic myPet = (PetOrganic)PetShelters.DefaultShelter.AllPets[petIndex];
+            myPet.Play();
 
-            switch (petActivity)
+
+
+
+        }
+
+        public void PerformActivity()
+        {
+
+
+            Console.WriteLine("Please select the pet you wish to update");
+
+            for (int i = 0; i < PetShelters.DefaultShelter.AllPets.Count; i++)
+                Console.WriteLine("Enter [" + i + "] for pet " + PetShelters.DefaultShelter.AllPets[i].Name);
+
+
+            String petNumberInput = Console.ReadLine();
+            int petNumber = -1;
+            int petActivity = -1;
+            bool isValid = int.TryParse(petNumberInput, out petNumber) && petNumber >= 0 && petNumber < PetShelters.DefaultShelter.AllPets.Count;
+
+
+            if (!isValid)
+                Console.WriteLine("You entered an invalid value: " + petNumberInput);
+
+            else
             {
+                
+                
+                Pet myPet = this.AllPets[petNumber];
+                Console.WriteLine("Based on the pet selected you can perform the following activities....");
+                //MethodInfo[] methodInfos = typeof(PetOrganic).GetMethods();
 
-                case 1:
-                    selectedPet.Feed();
-                    break;
+                MethodInfo[] methodInfos = myPet.GetType().GetMethods();
+                for (int i = 0; i < methodInfos.Length; i++)
+                {
 
-                case 2:
-                    selectedPet.Play();
-                    break;
-                case 3:
-                    selectedPet.SeeDoctor();
-                    break;
-                case 4:
-                    selectedPet.Rest();
-                    break;
-                default:
-                    Console.WriteLine("Invalid selection made");
-                    break;
+                    Console.WriteLine("Enter: [" + i + "] for activity: " + methodInfos[i].Name);
+
+
+                }
+
+                //foreach (MethodInfo methodInfo in methodInfos)
+                //    Console.WriteLine("Activity: " + methodInfo);
+
+                Console.WriteLine("Please enter your selection");
+                petNumberInput = Console.ReadLine();
+                petActivity = int.Parse(petNumberInput);
+
+                methodInfos[petActivity].Invoke(myPet, new object[] { });
+
 
             }
 
 
 
+
         }
+
+       
+
+      
+
     }
 }

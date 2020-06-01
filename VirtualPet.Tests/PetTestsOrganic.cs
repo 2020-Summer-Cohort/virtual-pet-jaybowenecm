@@ -3,15 +3,15 @@ using Xunit;
 
 namespace VirtualPet.Tests
 {
-    public class PetTests
+    public class PetTestsOrganic
     {
-        private Pet testPet;
+        private PetOrganic testPet;
 
-        public PetTests()
+        public PetTestsOrganic()
         {
-            testPet = new Pet("Pebbles");
+            testPet = new PetOrganic("Pebbles", Constants.SPECIES_TYPE.CAT);
         }
-
+       
         [Fact]
         public void Pet_Constructor_Should_Instantiate_Pet_Object()
         {
@@ -48,25 +48,25 @@ namespace VirtualPet.Tests
         [Fact]
         public void Pet_Should_Have_Species()
         {
-            Assert.NotNull(testPet.Species);
+            Assert.NotNull(testPet.Species.ToString());
         }
 
         [Fact]
         public void SetSpecies_Should_Assign_Pet_Species_Property()
         {
-            testPet.SetSpecies("Cat");
+            testPet.SetSpecies(Constants.SPECIES_TYPE.CAT);
 
-            Assert.Equal("Cat", testPet.Species);
+            Assert.Equal(Constants.SPECIES_TYPE.CAT, testPet.Species);
         }
 
         [Fact]
         public void GetSpecies_Should_Get_Pet_Species_Value()
         {
-            testPet.SetSpecies("Dog");
+            testPet.SetSpecies(Constants.SPECIES_TYPE.DOG);
 
-            string testPetSpecies = testPet.GetSpecies();
+            string testPetSpecies = testPet.Species.ToString();
 
-            Assert.Equal("Dog", testPetSpecies);
+            Assert.Equal(Constants.SPECIES_TYPE.DOG.ToString(), testPetSpecies);
         }
 
         [Fact]

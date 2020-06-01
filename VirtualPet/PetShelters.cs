@@ -23,8 +23,12 @@ namespace VirtualPet
         {
             //Initialize our game
             Shelter myShelter = new Shelter("Atari Pet Shelter");
-            foreach (String petName in Constants.PET_NAMES)
-                myShelter.AddPet(petName);
+            foreach (String petName in Constants.ORGANIC_PET_NAMES)
+                myShelter.AddPet(petName, Constants.PET_TYPE.ORGANIC, Constants.SPECIES_TYPE.DOG);
+
+
+            foreach (String petName in Constants.INORGANIC_PET_NAMES)
+                myShelter.AddPet(petName, Constants.PET_TYPE.INORGANIC, Constants.SPECIES_TYPE.CAT);
 
             shelters.Add(myShelter);
         }

@@ -46,3 +46,9 @@ Virtual Toys, Inc. requires:
 - As players interact with pets, the pet’s status changes differently for organic and robotic pets
 - As "time" ticks by, the pet's status changes negatively. The passing of time is measured by how often the player interacts with the program.
 - Useful player instructions in the form of a README.md file
+
+Instructions: The game starts by adding both organic and robotic pets. Select the animal you would like
+to interact with from the command line by entering the numeric position. You are then prompted for different activities you 
+can perform based on the pet type. You can also list all pets in the shelter, adopt or add new pets as well. When
+you leave your pets they will get BORED make sure you PLAY with your pets and see the DOCTOR or MECHANIC. HEALTH
+is important to your pets as is OIL.

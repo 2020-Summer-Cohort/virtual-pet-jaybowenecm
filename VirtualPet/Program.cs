@@ -16,7 +16,7 @@ namespace VirtualPet
         {
 
             foreach (Pet pet in PetShelters.DefaultShelter.AllPets)
-                Console.WriteLine("Added pet: " + pet.Name);
+                Console.WriteLine("Added pet: " + pet.Name + " and type is: " + pet.GetType());
             
 
             bool cancelRequested = false;
@@ -47,7 +47,7 @@ namespace VirtualPet
 
 
                     case "u":
-                        UpdatePetActivity();
+                        PerformActivity();
                         break;
 
                     case "p":
@@ -132,7 +132,17 @@ namespace VirtualPet
 
             Console.WriteLine("Please enter the pets name");
             String petName = Console.ReadLine();
-            PetShelters.DefaultShelter.AddPet(petName);
+
+            Console.WriteLine("Please enter the pet type: [0] cat, [1] dog");
+            int species = int.Parse(Console.ReadLine());
+            Constants.SPECIES_TYPE speciesType = (Constants.SPECIES_TYPE)species;
+
+            Console.WriteLine("Do you want a living or robotic pet? Enter : [0] organic, [1] inorganic");
+            int organicInorganicChoice = int.Parse(Console.ReadLine());
+            Constants.PET_TYPE petType = (Constants.PET_TYPE)organicInorganicChoice;
+
+
+            PetShelters.DefaultShelter.AddPet(petName, petType, speciesType);
 
             Console.WriteLine("You created a new pet: " + petName);
            
@@ -142,42 +152,11 @@ namespace VirtualPet
        
 
 
-        private static void UpdatePetActivity()
+        private static void PerformActivity()
         {
 
 
-            Console.WriteLine("Please select the pet you wish to update");
-
-            for (int i = 0; i< PetShelters.DefaultShelter.AllPets.Count;i++)
-               Console.WriteLine("Enter [" + i + "] for pet " + PetShelters.DefaultShelter.AllPets[i].Name);
-
-
-            String petNumberInput = Console.ReadLine();
-            int petNumber = -1;
-            int petActivity = -1;
-            bool isValid = int.TryParse(petNumberInput, out petNumber) && petNumber >= 0 && petNumber < PetShelters.DefaultShelter.AllPets.Count;
-
-
-            if(!isValid)
-                Console.WriteLine("You entered an invalid value: " + petNumberInput);
-
-            else
-            {
-
-                Console.WriteLine("What would you like your pet to do?");
-                Console.WriteLine("[1] Eat, [2]Play, [3] Visit Dr, [4] Rest");
-
-
-                petNumberInput = Console.ReadLine();
-                isValid = int.TryParse(petNumberInput, out petActivity);
-
-                if (!isValid)
-                    Console.WriteLine("You entered an invalid value: " + petNumberInput);
-                else
-                    PetShelters.DefaultShelter.PerformActivity(petNumber, petActivity);
-                   
-
-            }
+            PetShelters.DefaultShelter.PerformActivity();
 
 
 
